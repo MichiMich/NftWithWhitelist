@@ -31,7 +31,7 @@ async function main() {
     }
 
     console.log("contract balance after mint: ", await nftContract.getBalance());
-    dfadfa
+
 
 
 
