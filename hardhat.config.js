@@ -17,5 +17,19 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
+  defaultNetwork: "hardhat",
+  networks: {
+    hardhat: {
+    },
+    rinkeby: {
+      url: secrets.url,
+      accounts: [secrets.key],
+      gas: 2100000,
+      gasPrice: 8000000000
+    }
+  },
+  etherscan: {
+    apiKey: "1TFN9YDIVEN2REUTW3CUTQERDFTKX6EQ21"
+  },
   solidity: "0.8.4",
 };
