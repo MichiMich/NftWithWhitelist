@@ -46,6 +46,12 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
     uint256 private lastGetRandomNumber;
     bool useSeedWithTestnet; //1=seed with hash calc, 0=seed just given with example value in program
 
+    event randomNumberInRangeTriggered(
+        uint256 _randomNumberInRange,
+        string _leftEye,
+        string _rightEye
+    );
+
     constructor(bool _useSeedWithTestnet, uint256 _mintPriceWei)
         ERC721("AsciiFaces", "(O O)")
     {
@@ -99,6 +105,7 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
             lastGetRandomNumber = lastGetRandomNumber + 7;
         }
 
+        console.log("created random number: ", lastGetRandomNumber);
         return lastGetRandomNumber;
     }
 
@@ -139,11 +146,19 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
         uint256 resultedRandomNumber = createRandomNumberInRange(
             arrayOfAvailableMintCombinations.length
         );
+        console.log("created random number in range: ", resultedRandomNumber);
 
         mintCombination
             memory randomGeneratedEyesMintCombination = arrayOfAvailableMintCombinations[
                 resultedRandomNumber
             ];
+
+        //observe random number and used eyes with event
+        emit randomNumberInRangeTriggered(
+            resultedRandomNumber,
+            AsciiFaceEyes[randomGeneratedEyesMintCombination.LeftEye],
+            AsciiFaceEyes[randomGeneratedEyesMintCombination.RightEye]
+        );
 
         bytes memory createdSvgNft = bytes(
             abi.encodePacked(

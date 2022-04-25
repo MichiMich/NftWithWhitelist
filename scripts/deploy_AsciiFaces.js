@@ -1,13 +1,25 @@
 const hre = require("hardhat");
 const { ethers } = require("hardhat");
 
+
 async function main() {
 
 
+    //environmental and call dependend data
+    const networkName = hre.network.name
+    console.log("networkName: ", networkName);
+    const chainId = hre.network.config.chainId
+    console.log("chainId: ", chainId);
+    let useSeedWithTestnet;
+    if (chainId == "4" || networkName === "rinkeby") {
+        //rinkeby
+        console.log("seed with testnet used");
+        useSeedWithTestnet = true;
+    }
+
     // We get the contract to deploy
     const NftContract = await hre.ethers.getContractFactory("OnChainNftMintContract");
-    const nftContract = await NftContract.deploy(false, ethers.utils.parseUnits("1", 15)); //mint price set to 1e15 = 1 finney = 0.001 eth
-
+    const nftContract = await NftContract.deploy(useSeedWithTestnet, ethers.utils.parseUnits("1", 15)); //mint price set to 1e15 = 1 finney = 0.001 eth
     await nftContract.deployed();
 
     console.log("nftContract deployed to:", nftContract.address);
@@ -21,7 +33,7 @@ async function main() {
     console.log("contract balance before mint: ", await nftContract.getBalance());
     for (let i = 0; i < availableMintCombinations; i++) {
         createdNft = await nftContract.mint({ value: ethTransmitValueInWei });
-        console.log("created nft: ", createdNft);
+        console.log("created nft details: ", createdNft);
 
 
         //tokenUri
