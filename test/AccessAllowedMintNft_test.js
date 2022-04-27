@@ -37,6 +37,11 @@ describe("Mint and accessControl test", function () {
     })
 
 
+    it("MintAndAccess, try adding address while not the owner", async function () {
+        //add address, not by owner
+        await expect(accessControl.connect(accounts[2]).addAddressToAccessAllowed(accounts[3].address, 1)).to.be.reverted;
+    });
+
     it("MintAndAccess, link, add address, check access", async function () {
         await accessControl.linkNftContractAddress(nftContract.address);
         //add address, by owner
