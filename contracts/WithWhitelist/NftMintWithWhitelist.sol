@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "hardhat/console.sol";
-import "./Base64.sol";
+import "../Base64.sol";
 
 /*
 AsciiFaces
@@ -17,7 +17,7 @@ AsciiFaces
 
  */
 
-contract OnChainNftMintContract is ERC721Enumerable, Ownable {
+contract NftMintWithWhitelist is ERC721Enumerable, Ownable {
     using Counters for Counters.Counter;
 
     uint256 private maxTokenSupply;
@@ -55,10 +55,15 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
     //other contract dependencies
     address accessControlContractAddress;
 
-    constructor(bool _useSeedWithTestnet, uint256 _mintPriceWei, address _accessControlContractAddress)
-        ERC721("AsciiFaces", "(O O)")
-    {
-        require(_accessControlContractAddress != address(0), "accessControlContractAddress is not set");
+    constructor(
+        bool _useSeedWithTestnet,
+        uint256 _mintPriceWei,
+        address _accessControlContractAddress
+    ) ERC721("AsciiFaces", "(O O)") {
+        require(
+            _accessControlContractAddress != address(0),
+            "accessControlContractAddress is not set"
+        );
         accessControlContractAddress = _accessControlContractAddress;
         useSeedWithTestnet = _useSeedWithTestnet;
         defineMintCombinations();
@@ -91,7 +96,7 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
         id_to_asciiFace[_tokenID] = _generatedData;
     }
 
-    function enablePublicMint() public onlyOwner{
+    function enablePublicMint() public onlyOwner {
         publicMintActive = true;
     }
 
@@ -133,7 +138,7 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
         );
         require(msg.value >= mintPriceWei, "sent amount too low for minting");
 
-        if (!publicMintActive){
+        if (!publicMintActive) {
             //check if access is granted
             require(checkIfWhitelisted(msg.sender), "not whitelisted");
         }
@@ -212,7 +217,6 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
         return (accessControl.isAccessGranted(_addressToBeChecked));
     }
 
-
     function removeMintCombinationUnordered(uint256 _indexToRemove) private {
         require(
             _indexToRemove <= arrayOfAvailableMintCombinations.length ||
@@ -286,16 +290,14 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
     }
 
     //getters - end
+}
 
-
-    //add other contract dependencies - start	
-    abstract contract accessControlImpl {
+//add other contract dependencies - start
+abstract contract accessControlImpl {
     function isAccessGranted(address _adressToBeChecked)
         public
         view
         virtual
         returns (bool);
     //add other contract dependencies - end
-}
-
 }

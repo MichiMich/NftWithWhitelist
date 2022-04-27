@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 
-describe("AccessControl test", function () {
+describe("Mint and accessControl test", function () {
 
 
     let accessControl;
@@ -37,15 +37,7 @@ describe("AccessControl test", function () {
     })
 
 
-    it("AccessControl, add address", async function () {
-        //add address, by owner
-        await accessControl.addAddressToAccessAllowed(accounts[1].address, 1);
-        //this should be reverted, because we did not link the nft contract -> see AccessControl.sol line 
-        await expect(accessControl.isAccessGranted(accounts[1].address)).to.be.reverted;
-    });
-
-
-    it("AccessControl, link, add address, check access", async function () {
+    it("MintAndAccess, link, add address, check access", async function () {
         await accessControl.linkNftContractAddress(nftContract.address);
         //add address, by owner
         await accessControl.addAddressToAccessAllowed(accounts[1].address, 1);
@@ -57,7 +49,7 @@ describe("AccessControl test", function () {
     });
 
 
-    it("AccessControl, add multiple, mint, check nr and access again", async function () {
+    it("MintAndAccess, add multiple, mint, check nr and access again", async function () {
         const allowedNrOfMints = 3;
 
         await accessControl.linkNftContractAddress(nftContract.address);
