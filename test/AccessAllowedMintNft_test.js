@@ -15,7 +15,7 @@ describe("Mint and accessControl test", function () {
         accounts = await hre.ethers.getSigners();
         //deploy contract
         const AccessControl = await hre.ethers.getContractFactory("AccessControl");
-        accessControl = await AccessControl.deploy(); //mint price set to 1e15 = 1 finney = 0.001 eth
+        accessControl = await AccessControl.deploy();
         await accessControl.deployed();
         console.log("AccessControl deployed to:", accessControl.address);
 
