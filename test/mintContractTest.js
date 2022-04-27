@@ -3,7 +3,7 @@ const { ethers } = require("hardhat");
 
 describe("OnChainNftMint", function () {
 
-  it("try mint with low send amount", async function () {
+  it("OnChainNft, try mint with low send amount", async function () {
     // We get the contract to deploy
     const NftContract = await hre.ethers.getContractFactory("OnChainNftMintContract");
     const nftContract = await NftContract.deploy(false, ethers.utils.parseUnits("1", 15)); //mint price set to 1e15 = 1 finney = 0.001 eth
@@ -13,7 +13,7 @@ describe("OnChainNftMint", function () {
   });
 
 
-  it("check balance during mint and try minting more than available", async function () {
+  it("OnChainNft, check balance during mint and try minting more than available", async function () {
     // We get the contract to deploy
     const NftContract = await hre.ethers.getContractFactory("OnChainNftMintContract");
     const nftContract = await NftContract.deploy(false, ethers.utils.parseUnits("1", 15)); //mint price set to 1e15 = 1 finney = 0.001 eth
@@ -34,7 +34,7 @@ describe("OnChainNftMint", function () {
   });
 
 
-  it("diff accounts mint, ownership check", async function () {
+  it("OnChainNft, diff accounts mint, ownership check", async function () {
     //get all accounts
     accounts = await hre.ethers.getSigners();
 
