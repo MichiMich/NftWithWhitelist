@@ -2,10 +2,7 @@
 
 # Nft with whitelist
 
-<img src="./Svg/AsciiFaceXX.svg">
-<img src="./Svg/AsciiFaceOO.svg">
-<img src="./Svg/AsciiFaceXO.svg">
-<img src="./Svg/AsciiFaceOX.svg">
+<img src="./gifs/AsciiFaces.gif" width="142" height="142" />
 
 
 Creating two contracts.
