@@ -2,10 +2,7 @@
 
 # Nft with whitelist
 
-(X X)	(O O)	(O X)	(X O)
-  ^       ^	      ^	      ^
- ___     ___	 ___	 ___
-
+<img src="./Svg/AsciiFace.svg">
 
 
 Creating two contracts.
