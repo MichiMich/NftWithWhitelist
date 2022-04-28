@@ -4,6 +4,7 @@
 
 <img src="./gifs/AsciiFaces.gif" width="142" height="142" />
 
+<img src="./img/OpenseaAsciiFAce.png" width="490" height="301" />
 
 ## Short description
 Creating two contracts.
