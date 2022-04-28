@@ -32,12 +32,21 @@ from the AccessControl access during non-public mint.
 <ul  dir="auto">
 <li><a  href="https://nodejs.org/en/download/"  rel="nofollow">Nodejs and npm</a>
 You'll know you've installed nodejs right if you can run:
-<code>node --version</code> and get an ouput like: <code>vx.x.x</code>
+
+
+```
+node --version
+```
+ and get an ouput like: <code>vx.x.x</code>
 </ul>
 <ul  dir="auto">
 <li><a  href="https://hardhat.org/getting-started/"  rel="nofollow">hardhat</a>
 You'll know you've installed hardhat right if you can run:
-<code>npx hardhat --version</code> and get an ouput like: <code>2.9.3</code>
+
+```
+npx hardhat --version
+```
+and get an ouput like: <code>2.9.3</code>
 </ul>
 <ul  dir="auto">
 A webbrowser, since you can read this here I should not have to  mention it^^
@@ -55,27 +64,37 @@ Some rinkeby eth if you deploying to rinkeby testnet, you could grap some <a hre
 ## dependencies
 install dependencies: 
 ```
-    npm install --save-dev @openzeppelin/contracts @nomiclabs/hardhat-etherscan @nomiclabs/hardhat-waffle
+npm install --save-dev @openzeppelin/contracts @nomiclabs/hardhat-etherscan @nomiclabs/hardhat-waffle
 ```
-
 
 
 ## For the fast runners
 ## clone repository
-fire up the git clone command: <code>https://github.com/MichiMich/NftWithWhitelist</code>
+fire up the git clone command: 
+```
+git clone https://github.com/MichiMich/NftWithWhitelist
+```
+
 ## cd into it
-<pre class="notranslate">
-<code>cd NftWithWhitelist</code></pre>
+```
+cd NftWithWhitelist
+```
 
 ## and deploy/mint it:
-a) to local hardhat: <code>npx hardhat run scripts/deploy_NftWithWhitelist.js</code> or
+a) to local hardhat: 
+```
+npx hardhat run scripts/deploy_NftWithWhitelist.js
+```
 
 b) rinkeby: 
 **never share your private keys with anyone! I highly recommend you to create a new wallet only for testing contracts, dont use your wallets with actual money on it!! Please friend be save, better save than sorry! If you want to push your data on github, add the <code>secrets.json</code> at the .gitignore file**
 
 I used 3 wallets for the deploy script, so you can add the private keys at secrets.json or adapt the scripts/deploy_NftWithWhitelist.js file to only use one account, then you would only need one private key
 
-fill in your <a href="https://www.alchemy.com/">alchemy url</a> and private keys from your wallet at the secrets.json file and deploy it on rinkeby with <code>npx hardhat run scripts/deploy_NftWithWhitelist.js --network rinkeby</code>
+fill in your <a href="https://www.alchemy.com/">alchemy url</a> and private keys from your wallet at the secrets.json file and deploy it on rinkeby with 
+```
+npx hardhat run scripts/deploy_NftWithWhitelist.js --network rinkeby
+```
 
     
 
