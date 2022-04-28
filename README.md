@@ -5,29 +5,29 @@
 <img src="./gifs/AsciiFaces.gif" width="142" height="142" />
 
 
+## Short description
 Creating two contracts.
 
-1. A nft contract including the ERC721 standard which will create different AsciiFaces fully onchain
-2. An AccessControl contract which defines which adddress can mint what number of elements of the nft contract given in 1.
+1. A **nft contract** including the ERC721 standard which will create different AsciiFaces fully onchain
+2. An **AccessControl contract** which defines which adddress can mint what number of elements of the nft contract given in 1.
 
 
-## Nft contract - OnChainNftMintContract
-
+## Details
+### fully onchain
 Creating fully onchain generated AsciiFaces using base64 encoding and svg creation - no need for storing the picture/image/svg on any decentralized/centralized storage.
+
+### random and all mint combinations
 Defining all possible mint combinations during deployment of the contract.
+Combination of a choosen number at mint and the clearing of the used mint combinations to generate one of its kind nfts only - all "random" created - no duplicates.
+**its no full randomness, if you want a true unbiased randomness you should go for <a href="https://docs.chain.link/docs/chainlink-vrf/">chainlink VRF</a>**
 
-## AccessControl contract
-
-The AccessControl contract lets the owner add addresses and the allowed nr of elements which the address is able to mint.
-
-
-## Realization of a whitelist
+### Realization of a whitelist
 
 The whitelist is realized by linking the nft contract with the AccessControl contract and vice versa. This ensures that the mint function of the nft contract can only be accessed by addresses which are granted access
 from the AccessControl access during non-public mint.
 
 
-# Prerequisites
+## Prerequisites
 <ul  dir="auto">
 <li><a  href="https://nodejs.org/en/download/"  rel="nofollow">Nodejs and npm</a>
 You'll know you've installed nodejs right if you can run:
@@ -51,20 +51,16 @@ Some rinkeby eth if you deploying to rinkeby testnet, you could grap some <a hre
 
 
 
-# dependencies
+## dependencies
 ### openzeppelin
     ´npm install --save-dev @openzeppelin/contracts´
 
-# For the fast runners
+
+## For the fast runners
 ## clone repository
 fire up the git clone command: <code>https://github.com/MichiMich/NftWithWhitelist</code>
 ## cd into it
 <code>cd NftWithWhitelist</code>
-
-## enable hardhat networ logging
-by going to hardhat.config.js and add <code>hardhat: {
-      loggingEnabled: true,
-    },+</code>
 
 ## and deploy/mint it:
 a) to local hardhat: <code>npx hardhat run scripts/deploy_NftWithWhitelist.js</code> or
