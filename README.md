@@ -53,8 +53,9 @@ Some rinkeby eth if you deploying to rinkeby testnet, you could grap some <a hre
 
 
 ## dependencies
-### openzeppelin
-    ´npm install --save-dev @openzeppelin/contracts´
+install dependencies: 
+    ´npm install --save-dev @openzeppelin/contracts @nomiclabs/hardhat-etherscan @nomiclabs/hardhat-waffle´
+
 
 
 ## For the fast runners
