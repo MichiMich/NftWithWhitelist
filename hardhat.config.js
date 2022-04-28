@@ -1,4 +1,6 @@
 require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-etherscan");
+
 let secrets = require("./secrets");
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -21,10 +23,17 @@ module.exports = {
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {
+      loggingEnabled: true,
     },
     rinkeby: {
       url: secrets.url,
-      accounts: [secrets.key],
+      accounts: [secrets.key1, secrets.key2, secrets.key3],
+      gas: 2100000,
+      gasPrice: 8000000000
+    },
+    ropsten: {
+      url: secrets.url_ropsten,
+      accounts: [secrets.key1, secrets.key2, secrets.key3],
       gas: 2100000,
       gasPrice: 8000000000
     }
