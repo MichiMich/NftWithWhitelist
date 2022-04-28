@@ -54,7 +54,9 @@ Some rinkeby eth if you deploying to rinkeby testnet, you could grap some <a hre
 
 ## dependencies
 install dependencies: 
-    ´npm install --save-dev @openzeppelin/contracts @nomiclabs/hardhat-etherscan @nomiclabs/hardhat-waffle´
+```
+    npm install --save-dev @openzeppelin/contracts @nomiclabs/hardhat-etherscan @nomiclabs/hardhat-waffle
+```
 
 
 
@@ -62,7 +64,8 @@ install dependencies:
 ## clone repository
 fire up the git clone command: <code>https://github.com/MichiMich/NftWithWhitelist</code>
 ## cd into it
-<code>cd NftWithWhitelist</code>
+<pre class="notranslate">
+<code>cd NftWithWhitelist</code></pre>
 
 ## and deploy/mint it:
 a) to local hardhat: <code>npx hardhat run scripts/deploy_NftWithWhitelist.js</code> or
