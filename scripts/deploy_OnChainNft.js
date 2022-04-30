@@ -1,7 +1,6 @@
 const hre = require("hardhat");
 const { ethers } = require("hardhat");
 
-
 async function main() {
 
 
@@ -36,8 +35,9 @@ async function main() {
         console.log("created nft details: ", createdNft);
 
         //tokenUri
-        let tokenUri = await nftContract.tokenURI(i);
-        console.log("created AsciiFace: ", tokenUri);
+        //let tokenUri = await nftContract.tokenURI(i);
+        //console.log("created AsciiFace: ", tokenUri);
+
     }
 
     console.log("contract balance after mint: ", await nftContract.getBalance());

@@ -24,12 +24,11 @@ abstract contract AsciiFacesMetadata {
                     Base64.encode(
                         bytes(
                             abi.encodePacked(
-                                '{"name": "AsciiFaces", ',
-                                '"description": "Fully onchain generated AsciiFaces", "image": "data:image/svg+xml;base64,',
+                                '{"description":"Fully onchain generated AsciiFaces","image":"data:image/svg+xml;base64,',
                                 _base64EncodedSvgData,
-                                '","attributes":[{"trait_type": "Facesymmetry","value":"',
+                                '","name":"AsciiFaces(X X)","attributes":[{"trait_type":"Facesymmetry","value":"',
                                 Strings.toString(_faceSymmetry),
-                                '%"},{"trait_type":"EyeLeft","value":"',
+                                '"},{"trait_type":"EyeLeft","value":"',
                                 _asciiEyes[0],
                                 '"},{"trait_type":"EyeRight","value":"',
                                 _asciiEyes[1],
