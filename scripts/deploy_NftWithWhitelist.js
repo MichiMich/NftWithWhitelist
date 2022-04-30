@@ -13,8 +13,6 @@ async function main() {
     //get available accounts from hardhat
     accounts = await hre.ethers.getSigners();
     //console.log("accounts: ", accounts);
-    console.log("accounts0", accounts[0].address);
-
     //deploy contract
     const AccessControl = await hre.ethers.getContractFactory("AccessControl");
     accessControl = await AccessControl.deploy();
@@ -53,7 +51,7 @@ async function main() {
     //open public mint
     await nftContract.enablePublicMint();
     //lets mint
-    await nftContract.connect(accounts[3]).mint({ value: mintPrice });
+    await nftContract.connect(accounts[2]).mint({ value: mintPrice });
     //now even accounts which have already minted, can mint again
     await nftContract.connect(accounts[2]).mint({ value: mintPrice })
 

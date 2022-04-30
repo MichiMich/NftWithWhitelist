@@ -64,7 +64,7 @@ Some rinkeby eth if you deploying to rinkeby testnet, you could grap some <a hre
 ## dependencies
 install dependencies: 
 ```
-npm install --save-dev @openzeppelin/contracts @nomiclabs/hardhat-etherscan @nomiclabs/hardhat-waffle
+npm install --save-dev @openzeppelin/contracts @nomiclabs/hardhat-etherscan @nomiclabs/hardhat-waffle chai
 ```
 
 

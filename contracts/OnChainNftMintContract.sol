@@ -42,6 +42,8 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
     mintCombination[] arrayOfAvailableMintCombinations;
 
     mapping(uint256 => string) id_to_asciiFace;
+    mapping(uint256 => uint8) id_to_FaceSymmetry;
+    mapping(uint256 => bytes[2]) id_to_Eyes;
 
     uint256 private lastGetRandomNumber;
     bool useSeedWithTestnet; //1=seed with hash calc, 0=seed just given with example value in program
@@ -116,6 +118,27 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
         return createRandomNumber() % _range;
     }
 
+    function createMetadataAttributes(
+        uint256 _tokenId,
+        mintCombination memory _activeMintCombination
+    ) private {
+        //symmetry property
+        if (_activeMintCombination.LeftEye == _activeMintCombination.RightEye) {
+            //Full symmetry
+            id_to_FaceSymmetry[_tokenId] = 100;
+        } else {
+            //half symmetry
+            id_to_FaceSymmetry[_tokenId] = 50;
+        }
+        //Eye property
+        id_to_Eyes[_tokenId][0] = bytes(
+            AsciiFaceEyes[_activeMintCombination.LeftEye]
+        );
+        id_to_Eyes[_tokenId][1] = bytes(
+            AsciiFaceEyes[_activeMintCombination.RightEye]
+        );
+    }
+
     function mint() public payable returns (bool success) {
         // pre work for mint - start
         require(
@@ -124,6 +147,8 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
         );
         require(msg.value >= mintPriceWei, "sent amount too low for minting");
         // pre work for mint - end
+
+        uint256 currentMintedTokenId = tokensAlreadyMinted.current();
 
         /*
         //short
@@ -170,11 +195,17 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
             )
         );
 
-        _safeMint(msg.sender, tokensAlreadyMinted.current());
+        _safeMint(msg.sender, currentMintedTokenId);
 
         registerGeneratedToken(
-            tokensAlreadyMinted.current(),
+            currentMintedTokenId,
             string(Base64.encode(createdSvgNft))
+        );
+
+        //metadata attributes
+        createMetadataAttributes(
+            currentMintedTokenId,
+            randomGeneratedEyesMintCombination
         );
 
         tokensAlreadyMinted.increment();
@@ -223,6 +254,9 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
         returns (string memory)
     {
         require(_exists(_tokenId), "Nonexistent token"); //ToDo: this is already checked by tokenURI call, we could leave this out
+
+        //symmetry property
+
         return
             string(
                 abi.encodePacked(
@@ -233,7 +267,13 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
                                 '{"name": "AsciiFaces", ',
                                 '"description": "Fully onchain generated AsciiFaces", "image": "data:image/svg+xml;base64,',
                                 id_to_asciiFace[_tokenId],
-                                '"}'
+                                '","attributes":[{"trait_type": "Facesymmetry","value":"',
+                                Strings.toString(id_to_FaceSymmetry[_tokenId]),
+                                '%"},{"trait_type":"EyeLeft","value":"',
+                                id_to_Eyes[_tokenId][0],
+                                '"},{"trait_type":"EyeRight","value":"',
+                                id_to_Eyes[_tokenId][1],
+                                '"}]}'
                             )
                         )
                     )
