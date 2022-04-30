@@ -5,7 +5,7 @@ describe("OnChainNftMint", function () {
 
   it("OnChainNft, try mint with low send amount", async function () {
     // We get the contract to deploy
-    const NftContract = await hre.ethers.getContractFactory("OnChainNftMintContract");
+    const NftContract = await hre.ethers.getContractFactory("OnChainNft");
     const nftContract = await NftContract.deploy(false, ethers.utils.parseUnits("1", 15)); //mint price set to 1e15 = 1 finney = 0.001 eth
     await nftContract.deployed();
     let ethTransmitValueInWei = 0.5e15;
@@ -15,7 +15,7 @@ describe("OnChainNftMint", function () {
 
   it("OnChainNft, check balance during mint and try minting more than available", async function () {
     // We get the contract to deploy
-    const NftContract = await hre.ethers.getContractFactory("OnChainNftMintContract");
+    const NftContract = await hre.ethers.getContractFactory("OnChainNft");
     const nftContract = await NftContract.deploy(false, ethers.utils.parseUnits("1", 15)); //mint price set to 1e15 = 1 finney = 0.001 eth
     await nftContract.deployed();
     let ethTransmitValueInWei = ethers.utils.parseUnits("1", 15);
@@ -39,7 +39,7 @@ describe("OnChainNftMint", function () {
     accounts = await hre.ethers.getSigners();
 
     // We get the contract to deploy
-    const NftContract = await hre.ethers.getContractFactory("OnChainNftMintContract");
+    const NftContract = await hre.ethers.getContractFactory("OnChainNft");
     const nftContract = await NftContract.deploy(false, ethers.utils.parseUnits("1", 15)); //mint price set to 1e15 = 1 finney = 0.001 eth
     await nftContract.deployed();
     let ethTransmitValueInWei = ethers.utils.parseUnits("1", 15);

@@ -4,8 +4,8 @@ pragma solidity ^0.8.0; //>=0.8.0 <0.9.0;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
 import "hardhat/console.sol";
+import "../AsciiFacesMetadata.sol";
 import "../Base64.sol";
 
 /*
@@ -18,7 +18,11 @@ AsciiFaces
 
  */
 
-contract NftMintWithWhitelist is ERC721Enumerable, Ownable {
+contract OnChainNftWithAccessControl is
+    ERC721Enumerable,
+    Ownable,
+    AsciiFacesMetadata
+{
     using Counters for Counters.Counter;
 
     uint256 private maxTokenSupply;
@@ -278,40 +282,13 @@ contract NftMintWithWhitelist is ERC721Enumerable, Ownable {
             _exists(_tokenId),
             "ERC721Metadata: URI query for nonexistent token"
         );
-        return buildMetadata(_tokenId);
-    }
-
-    function buildMetadata(uint256 _tokenId)
-        public
-        view
-        returns (string memory)
-    {
-        require(_exists(_tokenId), "Nonexistent token"); //ToDo: this is already checked by tokenURI call, we could leave this out
-
-        //symmetry property
-
         return
-            string(
-                abi.encodePacked(
-                    "data:application/json;base64,",
-                    Base64.encode(
-                        bytes(
-                            abi.encodePacked(
-                                '{"name": "AsciiFaces", ',
-                                '"description": "Fully onchain generated AsciiFaces", "image": "data:image/svg+xml;base64,',
-                                id_to_asciiFace[_tokenId],
-                                '","attributes":[{"trait_type": "Facesymmetry","value":"',
-                                Strings.toString(id_to_FaceSymmetry[_tokenId]),
-                                '%"},{"trait_type":"EyeLeft","value":"',
-                                id_to_Eyes[_tokenId][0],
-                                '"},{"trait_type":"EyeRight","value":"',
-                                id_to_Eyes[_tokenId][1],
-                                '"}]}'
-                            )
-                        )
-                    )
-                )
+            buildMetadata(
+                id_to_asciiFace[_tokenId],
+                id_to_FaceSymmetry[_tokenId],
+                id_to_Eyes[_tokenId]
             );
+        //return buildMetadata(_tokenId);
     }
 
     //getters - start

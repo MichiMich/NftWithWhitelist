@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "hardhat/console.sol";
 import "./Base64.sol";
+import "./AsciiFacesMetadata.sol";
 
 /*
 AsciiFaces
@@ -17,7 +18,7 @@ AsciiFaces
 
  */
 
-contract OnChainNftMintContract is ERC721Enumerable, Ownable {
+contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
     using Counters for Counters.Counter;
 
     uint256 private maxTokenSupply;
@@ -245,9 +246,16 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
             _exists(_tokenId),
             "ERC721Metadata: URI query for nonexistent token"
         );
-        return buildMetadata(_tokenId);
+        return
+            buildMetadata(
+                id_to_asciiFace[_tokenId],
+                id_to_FaceSymmetry[_tokenId],
+                id_to_Eyes[_tokenId]
+            );
+        //return buildMetadata(_tokenId);
     }
 
+    /*
     function buildMetadata(uint256 _tokenId)
         public
         view
@@ -280,6 +288,7 @@ contract OnChainNftMintContract is ERC721Enumerable, Ownable {
                 )
             );
     }
+*/
 
     //getters start
     //get base64 data from given tokenID -> paste in browser -> svg from tokenId

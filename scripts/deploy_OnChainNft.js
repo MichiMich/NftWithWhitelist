@@ -18,7 +18,7 @@ async function main() {
     }
 
     // We get the contract to deploy
-    const NftContract = await hre.ethers.getContractFactory("OnChainNftMintContract");
+    const NftContract = await hre.ethers.getContractFactory("OnChainNft");
     const nftContract = await NftContract.deploy(useSeedWithTestnet, ethers.utils.parseUnits("1", 15)); //mint price set to 1e15 = 1 finney = 0.001 eth
     await nftContract.deployed();
 
@@ -35,11 +35,9 @@ async function main() {
         createdNft = await nftContract.mint({ value: ethTransmitValueInWei });
         console.log("created nft details: ", createdNft);
 
-
         //tokenUri
         let tokenUri = await nftContract.tokenURI(i);
         console.log("created AsciiFace: ", tokenUri);
-
     }
 
     console.log("contract balance after mint: ", await nftContract.getBalance());

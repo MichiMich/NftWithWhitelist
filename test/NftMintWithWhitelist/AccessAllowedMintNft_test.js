@@ -30,7 +30,7 @@ describe("Mint and accessControl test", function () {
             console.log("seed with testnet used");
             useSeedWithTestnet = true;
         }
-        const NftMintContract = await hre.ethers.getContractFactory("OnChainNftMintContract");
+        const NftMintContract = await hre.ethers.getContractFactory("OnChainNft");
         nftContract = await NftMintContract.deploy(useSeedWithTestnet, mintPrice); //mint price set to 1e15 = 1 finney = 0.001 eth
         await nftContract.deployed();
         console.log("nftMintContract deployed to:", nftContract.address);
