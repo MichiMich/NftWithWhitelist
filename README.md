@@ -4,7 +4,7 @@
 
 <img src="./gifs/AsciiFaces.gif" width="142" height="142" />
 
-**looksrare seems to create an png or img file out of the svg which can lead to loose of characters in the png file (svg to img/png converter have problems with specific signs), the metadata and created svg looks like the one above and is correct**
+**looksrare seems to create a png or img file out of the svg which can lead to loose of characters in the png file (svg to img/png converter have problems with specific signs), the metadata and created svg looks like the one above and is correct**
 
 <img src="./img/LooksRareAsciiFace.png" width="490" height="301" />
 
