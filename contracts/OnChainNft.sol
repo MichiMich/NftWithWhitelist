@@ -62,8 +62,7 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
     event randomNumberInRangeTriggered(
         uint256 _randomNumberInRange,
         string _leftEye,
-        string _rightEye,
-        uint256 _faceSymmetery
+        string _rightEye
     );
 
     constructor(bool _useSeedWithTestnet, uint256 _mintPriceWei)
@@ -94,7 +93,7 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
 
     function registerGeneratedToken(
         uint256 _tokenID,
-        mintCombination _mintCombination
+        mintCombination memory _mintCombination
     ) private {
         //add values to mapping, so you could fetch
 
@@ -229,7 +228,6 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
             "ERC721Metadata: URI query for nonexistent token"
         );
         return buildMetadata(_tokenId);
-        //return buildMetadata(_tokenId);
     }
 
     function buildMetadata(uint256 _tokenId)
@@ -248,28 +246,38 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
         ) {
             faceSymmetry = "100"; //left eye == right eye
             //this results in sth like: Son Goku the full BTC eyed AsciiFace
-            generatedName = abi.encodePacked(
-                s_asciiFaceNames[id_to_nftDetails[_tokenId].nameIndex],
-                " the full ",
-                s_FaceNameAttributes[
-                    id_to_nftDetails[_tokenId].createdMintCombination.LeftEye
-                ],
-                " eyed AsciiFace"
+            generatedName = string(
+                abi.encodePacked(
+                    s_asciiFaceNames[id_to_nftDetails[_tokenId].nameIndex],
+                    " the full ",
+                    s_FaceNameAttributes[
+                        id_to_nftDetails[_tokenId]
+                            .createdMintCombination
+                            .LeftEye
+                    ],
+                    " eyed AsciiFace"
+                )
             );
         } else {
             faceSymmetry = "50"; //left eye == right eye
             //this results in sth like: Son Goku the half BTC, half ETH eyed AsciiFace
-            generatedName = abi.encodePacked(
-                s_asciiFaceNames[id_to_nftDetails[_tokenId].nameIndex],
-                " the half ",
-                s_FaceNameAttributes[
-                    id_to_nftDetails[_tokenId].createdMintCombination.LeftEye
-                ],
-                ", half ",
-                s_FaceNameAttributes[
-                    id_to_nftDetails[_tokenId].createdMintCombination.RightEye
-                ],
-                " eyed AsciiFace"
+            generatedName = string(
+                abi.encodePacked(
+                    s_asciiFaceNames[id_to_nftDetails[_tokenId].nameIndex],
+                    " the half ",
+                    s_FaceNameAttributes[
+                        id_to_nftDetails[_tokenId]
+                            .createdMintCombination
+                            .LeftEye
+                    ],
+                    ", half ",
+                    s_FaceNameAttributes[
+                        id_to_nftDetails[_tokenId]
+                            .createdMintCombination
+                            .RightEye
+                    ],
+                    " eyed AsciiFace"
+                )
             );
         }
 
@@ -280,44 +288,46 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
                 abi.encodePacked(
                     "data:application/json;base64,",
                     Base64.encode(
-                        bytes(
-                            abi.encodePacked(
-                                '{"name": "',
-                                generatedName,
-                                '", "description": "Fully onchain generated AsciiFaces", "image": "data:image/svg+xml;base64,',
-                                id_to_asciiFace[_tokenId], //ToDo: need to create svg here with eye attributes
-                                '","attributes":[{"trait_type": "Facesymmetry","value":"',
-                                faceSymmetry,
-                                '%"},{"trait_type":"EyeLeft","value":"',
-                                s_asciiFaceEyes[
-                                    id_to_nftDetails[_tokenId]
-                                        .createdMintCombination
-                                        .LeftEye
-                                ],
-                                '"},{"trait_type":"EyeRight","value":"',
-                                s_asciiFaceEyes[
-                                    id_to_nftDetails[_tokenId]
-                                        .createdMintCombination
-                                        .RightEye
-                                ],
-                                '"}]}'
-                            )
+                        abi.encodePacked(
+                            '{"name": "',
+                            generatedName,
+                            '", "description": "Fully onchain generated AsciiFaces", "image": "data:image/svg+xml;base64,',
+                            Base64.encode(
+                                abi.encodePacked(
+                                    svgStartToEye,
+                                    s_asciiFaceEyes[
+                                        id_to_nftDetails[_tokenId]
+                                            .createdMintCombination
+                                            .LeftEye
+                                    ],
+                                    " ", //between eyes
+                                    s_asciiFaceEyes[
+                                        id_to_nftDetails[_tokenId]
+                                            .createdMintCombination
+                                            .RightEye
+                                    ],
+                                    svgEyeToEnd
+                                )
+                            ),
+                            '","attributes":[{"trait_type": "Facesymmetry","value":"',
+                            faceSymmetry,
+                            '%"},{"trait_type":"EyeLeft","value":"',
+                            s_asciiFaceEyes[
+                                id_to_nftDetails[_tokenId]
+                                    .createdMintCombination
+                                    .LeftEye
+                            ],
+                            '"},{"trait_type":"EyeRight","value":"',
+                            s_asciiFaceEyes[
+                                id_to_nftDetails[_tokenId]
+                                    .createdMintCombination
+                                    .RightEye
+                            ],
+                            '"}]}'
                         )
                     )
                 )
             );
-    }
-
-    //getters start
-    //get base64 data from given tokenID -> paste in browser -> svg from tokenId
-    function getAsciiFace(uint256 _tokenID)
-        public
-        view
-        returns (string memory)
-    {
-        require(_tokenID <= maxTokenSupply, "given tokenId is invalid");
-
-        return id_to_asciiFace[_tokenID];
     }
 
     function getBalance() public view returns (uint256) {

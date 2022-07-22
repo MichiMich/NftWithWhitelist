@@ -31,7 +31,7 @@ describe("Mint and accessControl test", function () {
     })
 
     it("getTokenURI_OnChainNft, mint and request created token URI", async function () {
-        const nrOfAvailableNfts = 4;
+        const nrOfAvailableNfts = 16;
 
         //mint two more
         let tokenURI;
