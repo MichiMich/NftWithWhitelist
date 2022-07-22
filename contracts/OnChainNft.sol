@@ -37,13 +37,24 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
         uint256 RightEye;
     }
 
-    string[4] AsciiFaceEyes = ["&#x20BF;", "&#x39E;", "X", "O"];
+    struct s_nftDetails {
+        mintCombination createdMintCombination;
+        uint256 nameIndex;
+    }
+
+    mapping(uint256 => s_nftDetails) private id_to_nftDetails;
+
+    string[4] s_asciiFaceEyes = ["&#x20BF;", "&#x39E;", "X", "O"];
+    string[5] s_asciiFaceNames = [
+        "Son Goku",
+        "Krillin",
+        "Vegeta",
+        "Piccolo",
+        "Majin Boo"
+    ];
+    string[4] s_FaceNameAttributes = ["BTC", "ETH", "Crossed", "Round"];
 
     mintCombination[] arrayOfAvailableMintCombinations;
-
-    mapping(uint256 => string) id_to_asciiFace;
-    mapping(uint256 => uint8) id_to_FaceSymmetry;
-    mapping(uint256 => bytes[2]) id_to_Eyes;
 
     uint256 private lastGetRandomNumber;
     bool useSeedWithTestnet; //1=seed with hash calc, 0=seed just given with example value in program
@@ -51,7 +62,8 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
     event randomNumberInRangeTriggered(
         uint256 _randomNumberInRange,
         string _leftEye,
-        string _rightEye
+        string _rightEye,
+        uint256 _faceSymmetery
     );
 
     constructor(bool _useSeedWithTestnet, uint256 _mintPriceWei)
@@ -64,8 +76,8 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
     }
 
     function defineMintCombinations() private {
-        for (uint256 j = 0; j < AsciiFaceEyes.length; j++) {
-            for (uint256 i = 0; i < AsciiFaceEyes.length; i++) {
+        for (uint256 j = 0; j < s_asciiFaceEyes.length; j++) {
+            for (uint256 i = 0; i < s_asciiFaceEyes.length; i++) {
                 arrayOfAvailableMintCombinations.push(mintCombination(j, i));
                 maxTokenSupply += 1;
             }
@@ -82,10 +94,14 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
 
     function registerGeneratedToken(
         uint256 _tokenID,
-        string memory _generatedData
+        mintCombination _mintCombination
     ) private {
         //add values to mapping, so you could fetch
-        id_to_asciiFace[_tokenID] = _generatedData;
+
+        id_to_nftDetails[_tokenID] = s_nftDetails(
+            _mintCombination, //eye index left, eye index right
+            createRandomNumberInRange(s_asciiFaceNames.length) //name index
+        );
     }
 
     function createRandomNumber() private returns (uint256) {
@@ -117,6 +133,7 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
         return createRandomNumber() % _range;
     }
 
+    /*
     function createMetadataAttributes(
         uint256 _tokenId,
         mintCombination memory _activeMintCombination
@@ -131,12 +148,12 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
         }
         //Eye property
         id_to_Eyes[_tokenId][0] = bytes(
-            AsciiFaceEyes[_activeMintCombination.LeftEye]
+            s_asciiFaceEyes[_activeMintCombination.LeftEye]
         );
         id_to_Eyes[_tokenId][1] = bytes(
-            AsciiFaceEyes[_activeMintCombination.RightEye]
+            s_asciiFaceEyes[_activeMintCombination.RightEye]
         );
-    }
+    }*/
 
     function mint() public payable returns (bool success) {
         // pre work for mint - start
@@ -148,22 +165,6 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
         // pre work for mint - end
 
         uint256 currentMintedTokenId = tokensAlreadyMinted.current();
-
-        /*
-        //short
-        bytes memory createdSvgNft = bytes(
-            abi.encodePacked(
-                svgStartToEye,
-                arrayOfAvailableMintCombinations[
-                    createRandomNumberInRange(
-                        arrayOfAvailableMintCombinations.length
-                    )
-                ],
-                svgEyeToEye,
-                svgEyeToEnd
-            )
-        );
-        */
 
         //more readable
         //create random number in range of available combinations/array length
@@ -179,29 +180,13 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
         //observe random number and used eyes with event
         emit randomNumberInRangeTriggered(
             resultedRandomNumber,
-            AsciiFaceEyes[randomGeneratedEyesMintCombination.LeftEye],
-            AsciiFaceEyes[randomGeneratedEyesMintCombination.RightEye]
-        );
-
-        bytes memory createdSvgNft = bytes(
-            abi.encodePacked(
-                svgStartToEye,
-                AsciiFaceEyes[randomGeneratedEyesMintCombination.LeftEye], //X or O
-                svgEyeToEye,
-                AsciiFaceEyes[randomGeneratedEyesMintCombination.RightEye], //X or O
-                svgEyeToEnd
-            )
+            s_asciiFaceEyes[randomGeneratedEyesMintCombination.LeftEye],
+            s_asciiFaceEyes[randomGeneratedEyesMintCombination.RightEye]
         );
 
         _safeMint(msg.sender, currentMintedTokenId);
 
         registerGeneratedToken(
-            currentMintedTokenId,
-            string(Base64.encode(createdSvgNft))
-        );
-
-        //metadata attributes
-        createMetadataAttributes(
             currentMintedTokenId,
             randomGeneratedEyesMintCombination
         );
@@ -243,16 +228,10 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
             _exists(_tokenId),
             "ERC721Metadata: URI query for nonexistent token"
         );
-        return
-            buildMetadata(
-                id_to_asciiFace[_tokenId],
-                id_to_FaceSymmetry[_tokenId],
-                id_to_Eyes[_tokenId]
-            );
+        return buildMetadata(_tokenId);
         //return buildMetadata(_tokenId);
     }
 
-    /*
     function buildMetadata(uint256 _tokenId)
         public
         view
@@ -260,7 +239,41 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
     {
         require(_exists(_tokenId), "Nonexistent token"); //ToDo: this is already checked by tokenURI call, we could leave this out
 
-        //symmetry property
+        string memory generatedName = "";
+        string memory faceSymmetry = "";
+
+        if (
+            id_to_nftDetails[_tokenId].createdMintCombination.LeftEye ==
+            id_to_nftDetails[_tokenId].createdMintCombination.RightEye
+        ) {
+            faceSymmetry = "100"; //left eye == right eye
+            //this results in sth like: Son Goku the full BTC eyed AsciiFace
+            generatedName = abi.encodePacked(
+                s_asciiFaceNames[id_to_nftDetails[_tokenId].nameIndex],
+                " the full ",
+                s_FaceNameAttributes[
+                    id_to_nftDetails[_tokenId].createdMintCombination.LeftEye
+                ],
+                " eyed AsciiFace"
+            );
+        } else {
+            faceSymmetry = "50"; //left eye == right eye
+            //this results in sth like: Son Goku the half BTC, half ETH eyed AsciiFace
+            generatedName = abi.encodePacked(
+                s_asciiFaceNames[id_to_nftDetails[_tokenId].nameIndex],
+                " the half ",
+                s_FaceNameAttributes[
+                    id_to_nftDetails[_tokenId].createdMintCombination.LeftEye
+                ],
+                ", half ",
+                s_FaceNameAttributes[
+                    id_to_nftDetails[_tokenId].createdMintCombination.RightEye
+                ],
+                " eyed AsciiFace"
+            );
+        }
+
+        //ToDo: name creation, depending on name index and eye symmetry
 
         return
             string(
@@ -269,15 +282,24 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
                     Base64.encode(
                         bytes(
                             abi.encodePacked(
-                                '{"name": "AsciiFaces", ',
-                                '"description": "Fully onchain generated AsciiFaces", "image": "data:image/svg+xml;base64,',
-                                id_to_asciiFace[_tokenId],
+                                '{"name": "',
+                                generatedName,
+                                '", "description": "Fully onchain generated AsciiFaces", "image": "data:image/svg+xml;base64,',
+                                id_to_asciiFace[_tokenId], //ToDo: need to create svg here with eye attributes
                                 '","attributes":[{"trait_type": "Facesymmetry","value":"',
-                                Strings.toString(id_to_FaceSymmetry[_tokenId]),
+                                faceSymmetry,
                                 '%"},{"trait_type":"EyeLeft","value":"',
-                                id_to_Eyes[_tokenId][0],
+                                s_asciiFaceEyes[
+                                    id_to_nftDetails[_tokenId]
+                                        .createdMintCombination
+                                        .LeftEye
+                                ],
                                 '"},{"trait_type":"EyeRight","value":"',
-                                id_to_Eyes[_tokenId][1],
+                                s_asciiFaceEyes[
+                                    id_to_nftDetails[_tokenId]
+                                        .createdMintCombination
+                                        .RightEye
+                                ],
                                 '"}]}'
                             )
                         )
@@ -285,7 +307,6 @@ contract OnChainNft is ERC721Enumerable, Ownable, AsciiFacesMetadata {
                 )
             );
     }
-*/
 
     //getters start
     //get base64 data from given tokenID -> paste in browser -> svg from tokenId
